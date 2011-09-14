@@ -5,7 +5,8 @@ find_package(Matlab)
 find_package(X11)
 find_package(Threads)
 
-include_directories(${MATLAB_INCLUDE_DIR})
+include_directories(${MATLAB_INCLUDE_DIR}
+                    ${CONVERTER_SOURCE_DIR}/include)
 
 add_executable(converter converter.cpp)
 target_link_libraries(
