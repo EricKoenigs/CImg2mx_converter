@@ -72,6 +72,14 @@ mxArray* CImgToMx(
 }
 
 
+template <typename T>
+mxArray* CImgListToMx (
+		cimg_library::CImgList<T>) {
+
+	return 0;
+}
+
+
 
 template <typename T>
 cimg_library::CImg<T> MxToCImg(

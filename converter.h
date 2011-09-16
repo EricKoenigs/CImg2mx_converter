@@ -46,6 +46,10 @@ template <typename T>
 mxArray* CImgToMx (
 		cimg_library::CImg<T> img);
 
+template <typename T>
+mxArray* CImgListToMx (
+		cimg_library::CImgList<T> list);
+
 
 /// mxArray to CImg converter function
 /** This function takes a mxArray and tries to convert it into a
