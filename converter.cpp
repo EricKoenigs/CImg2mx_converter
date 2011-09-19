@@ -40,7 +40,7 @@ int main() {
 	// Testing image open.
 	std::cout 	<< "Trying to create CImg from CImgLogo.jpg..."
 				<< std::endl;
-	cimg_library::CImg<double> img("../CImgLogo.jpg");
+	cimg_library::CImg<double> img("CImgLogo.jpg");
 	std::cout 	<< "OK"
 				<< std::endl;
 	

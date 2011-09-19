@@ -26,6 +26,9 @@
  *	  Eric Koenigs</a>
  */
 
+// CImg needs these to use libjpeg and libpng
+#define cimg_use_jpeg
+#define cimg_use_png
 #include "CImg.h"
 #include "matrix.h"  
 #include <stdexcept>
