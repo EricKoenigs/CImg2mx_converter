@@ -20,5 +20,4 @@ target_link_libraries(
 	${X11_X11_LIB}
 	${JPEG_LIBRARY}
 	${PNG_LIBRARY}
-	cimg2mx
 	)
