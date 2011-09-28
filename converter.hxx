@@ -78,8 +78,11 @@ cimg_library::CImg<T> mx2CImg(
 
 	// Check if the mxArray has the correct number of dimensions.
 	mwSize ndims = mxGetNumberOfDimensions(mxA);
-	if (ndims != 4) {
-		throw std::invalid_argument("Conversion failed. The supplied mxArray does not have the correct number of dimensions. Expected 4.");
+	if (ndims > 4) {
+		throw std::invalid_argument(
+				"Conversion failed. The supplied mxArray has too "
+				"many dimensions. Expected 4 or less.");
+
 	};
 
 	// Gets the size of the dimensions from the mxArray.
@@ -89,8 +92,23 @@ cimg_library::CImg<T> mx2CImg(
 	// Assigns the dimension 
 	const unsigned int width = dims[0];
 	const unsigned int height = dims[1];
-	const unsigned int depth = dims[2];
-	const unsigned int spectrum = dims[3];
+	// Check if the image has additional dimensions beyond 2,
+	// and set them to 1 if they don't exist, or to the correct
+	// value attained from dims[].
+	unsigned int depth;
+	unsigned int spectrum;
+	if (ndims > 2) {
+		depth = dims[2];
+	}
+	else {
+		depth = 1;
+	};
+	if (ndims > 3) {
+		spectrum = dims[3];
+	}
+	else {
+		spectrum = 1;
+	};
 
 	// Creates the image.
 	cimg_library::CImg<T> img(width, height, depth, spectrum);
