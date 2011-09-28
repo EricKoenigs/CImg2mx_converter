@@ -23,7 +23,7 @@
  *	  Eric Koenigs</a>
  */
 
-#include "converter.h"
+#include "converter.hxx"
 #include "engine.h"
 #include <iostream>
 
