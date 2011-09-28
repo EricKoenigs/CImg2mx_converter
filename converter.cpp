@@ -1,21 +1,14 @@
 /* Copyright (C) 2011 Eric Koenigs
  *
  * This program is free software under the terms of
- * the WTFPL v2, and thus GPL-compatible.
+ * the Do What The Fuck You Want To Public License,
+ * and is thus GPL-compatible. It comes with
+ * the usual disclaimer about coming without any warranty
+ * as well as other legal yadda yadda.
  *
- *		   DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
- *				   Version 2, December 2004
- * 
- * Copyright (C) 2004 Sam Hocevar <sam@hocevar.net>
- * 
- * Everyone is permitted to copy and distribute verbatim or modified
- * copies of this license document, and changing it is allowed as long
- * as the name is changed.
- *  
- *			DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
- *   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
- *  
- *  0. You just DO WHAT THE FUCK YOU WANT TO.
+ * See COPYING.txt for a copy of the license, or
+ * head to http://sam.zoy.org/wtfpl/COPYING if the
+ * file is missing for whatever reason.
  */
 
 /** \file converter.cpp
@@ -30,17 +23,18 @@
  *	  Eric Koenigs</a>
  */
 
-#include "converter.hxx"
+#include "converter.h"
 #include "engine.h"
 #include <iostream>
 
-/* Tests the converter.
+/** Tests the converter.
  */
 int main() {
 	// Testing image open.
 	std::cout 	<< "Trying to create CImg from CImgLogo.jpg..."
 				<< std::endl;
-	cimg_library::CImg<double> img("CImgLogo.jpg");
+	cimg_library::CImg<double> img("../CImgLogo.jpg");
+	
 	std::cout 	<< "OK"
 				<< std::endl;
 	
@@ -48,10 +42,9 @@ int main() {
 	// Testing conversion CImg -> mxArray
 	std::cout	<< "Trying to convert CImg to mxArray..."
 				<< std::endl;
-	mxArray* mxA = CImgToMx<double>(img);
+	mxArray* mxA = CImg2mx<double>(img);
 	std::cout	<< "OK"
 				<< std::endl;
-	
 
 	// Testing Matlab engine.
 	std::cout	<< "Trying to open Matlab engine..."
@@ -110,7 +103,7 @@ int main() {
 	std::cout	<< "Trying reverse conversion..."
 				<< std::endl;
 	cimg_library::CImg<double> img2;
-	img2 = MxToCImg<double>(mxA);
+	img2 = mx2CImg<double>(mxA);
 	double* data = img.data();
 	double* data2 = img2.data();
 

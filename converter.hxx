@@ -1,25 +1,18 @@
 /* Copyright (C) 2011 Eric Koenigs
  *
  * This program is free software under the terms of
- * the WTFPL v2, and thus GPL-compatible.
+ * the Do What The Fuck You Want To Public License,
+ * and is thus GPL-compatible. It comes with
+ * the usual disclaimer about coming without any warranty
+ * as well as other legal yadda yadda.
  *
- *		   DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
- *				   Version 2, December 2004
- *
- * Copyright (C) 2004 Sam Hocevar <sam@hocevar.net>
- *
- * Everyone is permitted to copy and distribute verbatim or modified
- * copies of this license document, and changing it is allowed as long
- * as the name is changed.
- *
- *			DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
- *   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
- *
- *  0. You just DO WHAT THE FUCK YOU WANT TO.
+ * See COPYING.txt for a copy of the license, or
+ * head to http://sam.zoy.org/wtfpl/COPYING if the
+ * file is missing for whatever reason.
  */
 
 /** \file converter.hxx
- *  Implementation of the parameter functions CImgToMx, MxToCImg and
+ *  Implementation of the parameter functions CImg2mx, mx2CImg and
  *  getClassID.
  *
  *  \author <a href="mailto:e.koenigs@stud.uni-heidelberg.de">
@@ -29,7 +22,7 @@
 #include "converter.h"
 
 template <typename T>
-mxArray* CImgToMx(
+mxArray* CImg2mx(
 		cimg_library::CImg<T> img) {
 	// Gets the correct matlab class ID for the type.
 	mxClassID classid = getClassID<T>();
@@ -46,9 +39,9 @@ mxArray* CImgToMx(
 	// Gets the sizes of all 4 dimensions
 	const mwSize dims[] = {
 		img.width(),		// Dimension 1
-		img.height(),	   // Dimension 2
+		img.height(),		// Dimension 2
 		img.depth(),		// Dimension 3
-		img.spectrum()	  // Dimension 4
+		img.spectrum()		// Dimension 4
 	};
 
 	// Create an unpopulated mxArray with the appropriate dimensions and
@@ -73,16 +66,7 @@ mxArray* CImgToMx(
 
 
 template <typename T>
-mxArray* CImgListToMx (
-		cimg_library::CImgList<T>) {
-
-	return 0;
-}
-
-
-
-template <typename T>
-cimg_library::CImg<T> MxToCImg(
+cimg_library::CImg<T> mx2CImg(
 		const mxArray* mxA) {
 	// Check if the types match.
 	mxClassID mxID = mxGetClassID(mxA);
@@ -119,22 +103,24 @@ cimg_library::CImg<T> MxToCImg(
 	memcpy(data, pointer, img.size()*sizeof(T));
 
 	// Transposes the image back.
-	// See CImgToMx for explanation.
+	// See CImg2mx for explanation.
 	img.transpose();
 
 	return img;
 }
 
 
-
+/// Template implementation for int
 template <>
 mxClassID getClassID<int> () {
 	return mxINT32_CLASS;
 }
+/// Template implementation for float
 template <>
 mxClassID getClassID<float> () {
 	return mxSINGLE_CLASS;
 }
+/// Template implementation for double
 template <>
 mxClassID getClassID<double> () {
 	return mxDOUBLE_CLASS;

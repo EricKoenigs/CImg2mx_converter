@@ -1,5 +1,7 @@
 *.bak
 build/
-doc/
+doc/html
+doc/latex
+doc/*.tmp
 *.mat
 *.swp

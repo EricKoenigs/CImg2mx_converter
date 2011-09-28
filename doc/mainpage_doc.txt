@@ -1,0 +1,76 @@
+/**
+\mainpage CImg to mxArray converter
+
+\section desc Description
+This program provides converter templates to use images
+stored as CImg objects in Matlab and vice versa. It was
+written for use in a 
+<a href="http://sourceforge.net/apps/trac/charon-suite">
+Charon</a> plugin to call Matlab scripts for image processing,
+but can be used by anything that uses CImg and wants to use
+Matlab. It's currently implemented for <strong>int</strong>,
+<strong>float</strong>, and <strong>double</strong>.
+
+\section intern How it works
+The converter uses Matlab's <i>matrix.h</i> header, which defines an API
+for mxArrays, which are usually used in MEX files (C extentions for
+Matlab). Since the Charon plugin has to do the exact opposite (using
+Matlab from C/C++), we needed a way to get images stored as CImg objects
+into Matlab to call scripts or functions on them, and then get them back
+into a CImg object again.
+
+To convert to a mxArray, the converter first figures out the correct
+Matlab class ID as well as the sizes of the four dimensions of the CImg
+(width, height, depth and spectrum), then creates an unpopulated mxArray
+with the correct type and sizes. Afterwards, it gets the data
+pointers of both objects and simply uses <strong>memcpy</strong> to
+copy the data from the CImg to the mxArray.
+Also, the CImg has to be transposed before converting because Matlab
+stores arrays Fortran-style (column wise), which means the image
+is transposed by 90 degrees to the left when copied.
+
+The backwards conversion is pretty much analogous, but is a bit tricky
+because the type defined by the template parameter isn't necessarily the
+type of the mxArray. Also, one could try to feed the converter a mxArray
+with a number of dimensions other than 4. In both cases, the function
+will throw an error to prevent funky Segfaults (we all love those, don't
+we?). The actual conversion is just a reverse memcpy, after which the
+CImg is transposed again to get back the original image.
+
+Finally, a quick note on the getClassID function. This is an incomplete
+template function which is only defined for <strong>int</strong>,
+<strong>float</strong> and <strong>double</strong>. Since both of
+the converter functions rely on this function to figure out the class
+ID, calling them with any other type will cause the compiler to error
+and (probably) complain about missing template definitions. It's rather
+trivial to add new definitions though, since the function is pretty
+much a oneliner consisting of a return statement. Refer to the Matlab
+documentation for all mxClassIDs.
+
+\section license License
+Copyright (C) <a href="mailto:e.koenigs@stud.uni-heidelberg.de">
+Eric Koenigs</a>
+
+This program is free software under the terms of the WTFPL Version 2,
+which is approved by the Free Software Foundation as compatible with
+the GNU General Public License.
+
+<pre>
+DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+Version 2, December 2004
+
+Copyright (C) 2004 Sam Hocevar <sam@hocevar.net>
+
+Everyone is permitted to copy and distribute verbatim or modified
+copies of this license document, and changing it is allowed as long
+as the name is changed.
+
+DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+
+0. You just DO WHAT THE FUCK YOU WANT TO.
+</pre>
+
+
+
+*/

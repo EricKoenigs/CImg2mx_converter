@@ -7,15 +7,18 @@ find_package(Threads)
 find_package(JPEG)
 find_package(PNG)
 
-include_directories(${MATLAB_INCLUDE_DIR}
-                    ${CONVERTER_SOURCE_DIR}/include)
+include_directories(
+	${MATLAB_INCLUDE_DIR}
+	${CONVERTER_SOURCE_DIR}/include
+	)
 
 add_executable(converter converter.cpp)
 target_link_libraries(
-    converter
-    ${MATLAB_MX_LIBRARY} 
-    ${X11_X11_LIB}
-    ${MATLAB_ENG_LIBRARY}
+	converter
+	${MATLAB_ENG_LIBRARY}
+	${MATLAB_MX_LIBRARY}
+	${X11_X11_LIB}
 	${JPEG_LIBRARY}
 	${PNG_LIBRARY}
-    )
+	cimg2mx
+	)
