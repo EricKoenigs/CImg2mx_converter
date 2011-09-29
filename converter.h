@@ -46,6 +46,26 @@ template <typename T>
 mxArray* CImg2mx (
 		cimg_library::CImg<T> img);
 
+/// CImgList to mxArray (Cell) converter function
+/**	This function takes a CImgList and tries to convert all images
+ *	within it to mxArrays of the appropriate type, then put those
+ *	into an appropriately sized mxArray representing a Matlab Cell 
+ *	matrix. See getClassID() for all supported types.
+ *
+ *	\see getClassID
+ *	\see CImg2mx()
+ *
+ *	\param list A CImgList<T> to be converted.
+ *
+ *	\return A pointer to the mxArray that represents the Cell matrix
+ *	containing the images.
+ */
+template <typename T>
+mxArray* CImgList2mx (
+		cimg_library::CImgList<T> list);
+
+
+
 /// mxArray to CImg converter function
 /** This function takes a mxArray and tries to convert it into a
  *  CImg of the appropriate type. See getClassID() for all
@@ -64,7 +84,6 @@ mxArray* CImg2mx (
 template <typename T>
 cimg_library::CImg<T> mx2CImg (
 		const mxArray* mxA);
-
 
 
 

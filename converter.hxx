@@ -66,17 +66,60 @@ mxArray* CImg2mx(
 
 
 template <typename T>
+mxArray* CImgList2mx(
+		cimg_library::CImgList<T> list) {
+	// Sets the appropriate dimensions for the cell matrix
+	mwSize matrixSizeM = 1;				// We only need 1 dimension.
+	mwSize matrixSizeN = list.size();
+
+	// Create the cell matrix.
+	mxArray* mxCell = mxCreateCellMatrix(
+			matrixSizeM,
+			matrixSizeN
+			);
+	
+	// Stop. Conversion time.
+	mxArray* mxTmp;
+	cimg_library::CImg<T> imgTmp;
+	for (unsigned int i = 0; i < list.size(); i++) {
+		imgTmp = list[i];
+		mxTmp = CImg2mx<T>(imgTmp);
+
+		// Matlab indices start at 1, not 0!
+		mxSetCell(mxCell, i + 1, mxTmp);
+
+		// Clean up before the next iteration,
+		// we don't want nasty memory leaks.
+		// mxDestroyArray(mxTmp);
+		// Actually I'm not sure about this.
+		// Does mxSetCell make a deep copy or rely on the pointer?
+		// Risking memory leaks for now.
+	};
+
+	return mxCell;
+};
+
+
+
+
+template <typename T>
 cimg_library::CImg<T> mx2CImg(
 		const mxArray* mxA) {
-	// Check if the types match.
+	// Checks if mxA is a numeric array.
+	if (!mxIsNumeric(mxA)) {
+		throw std::invalid_argument("Conversion failed. "
+				"The supplied mxArray is not a numeric array.");
+	};
+	// Checks if the types match.
 	mxClassID mxID = mxGetClassID(mxA);
 	mxClassID imgID = getClassID<T>();
 	if (mxID != imgID) {
 		throw std::invalid_argument("Conversion failed. "
-"The types of the mxArray and the requested CImg don't match.");
+				"The types of the mxArray and the requested "
+				"CImg don't match.");
 	};
 
-	// Check if the mxArray has the correct number of dimensions.
+	// Checks if the mxArray has the correct number of dimensions.
 	mwSize ndims = mxGetNumberOfDimensions(mxA);
 	if (ndims > 4) {
 		throw std::invalid_argument(
@@ -92,8 +135,8 @@ cimg_library::CImg<T> mx2CImg(
 	// Assigns the dimension 
 	const unsigned int width = dims[0];
 	const unsigned int height = dims[1];
-	// Check if the image has additional dimensions beyond 2,
-	// and set them to 1 if they don't exist, or to the correct
+	// Checks if the image has additional dimensions beyond 2,
+	// and sets them to 1 if they don't exist, or to the correct
 	// value attained from dims[].
 	unsigned int depth;
 	unsigned int spectrum;
