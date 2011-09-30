@@ -37,12 +37,26 @@ int main() {
 	
 	std::cout 	<< "OK"
 				<< std::endl;
-	
+
+	// Testing CImgList
+	std::cout	<< "Trying to create a CImgList with the CImg..."
+				<< std::endl;
+	cimg_library::CImgList<double> list(1);
+	list[0] = img;
+	std::cout	<< "OK"
+				<< std::endl;
 
 	// Testing conversion CImg -> mxArray
 	std::cout	<< "Trying to convert CImg to mxArray..."
 				<< std::endl;
 	mxArray* mxA = CImg2mx<double>(img);
+	std::cout	<< "OK"
+				<< std::endl;
+
+	// Testing conversion CImgList -> mxArray
+	std::cout	<< "Trying to convert CImgList to mxArray..."
+				<< std::endl;
+	mxArray* mxB = CImgList2mx<double>(list);
 	std::cout	<< "OK"
 				<< std::endl;
 
@@ -70,10 +84,28 @@ int main() {
 					<< std::endl;
 		exit(0);
 	};
-	
+
 	// If the above works, this SHOULD work too...
 	if (engEvalString(ep, "save CImgLogo") != 0) {
 		std::cout	<< "Error: Saving image in Matlab failed. Aborting..."
+					<< std::endl;
+		exit(0);
+	};
+	std::cout	<< "OK"
+				<< std::endl;
+
+	// Testing API with list.
+	std::cout	<< "Trying to put the converted list into Matlab..."
+				<< std::endl;
+	if (engPutVariable(ep, "CImgLogoList", mxB) != 0) {
+		std::cout	<< "Error: engPutVariable() failed. Aborting..."
+					<< std::endl;
+		exit(0);
+	};
+
+	// Should work if above works.
+	if (engEvalString(ep, "save CImgLogoList") != 0) {
+		std::cout	<< "Error: Saving list in Matlab failed. Aborting..."
 					<< std::endl;
 		exit(0);
 	};
@@ -99,8 +131,8 @@ int main() {
 	
 
 
-	// Testing reverse conversion
-	std::cout	<< "Trying reverse conversion..."
+	// Testing reverse conversion image
+	std::cout	<< "Trying reverse conversion of image..."
 				<< std::endl;
 	cimg_library::CImg<double> img2;
 	img2 = mx2CImg<double>(mxA);
@@ -115,7 +147,7 @@ int main() {
 	};
 	if (errors > 0) {
 			std::cout	<< "Error: Original image and reconverted "
-								"image don't match. Found "
+							"image don't match. Found "
 						<< errors
 						<< " errors. Aborting..."
 						<< std::endl;
@@ -127,6 +159,33 @@ int main() {
 				<< std::endl;
 
 	
+	// Testing reverse conversion of list
+	std::cout	<< "Trying reverse conversion of list..."
+				<< std::endl;
+	cimg_library::CImgList<double> list2;
+	list2 = mx2CImg<double>(mxA);
+	data = list[0].data();
+	data2 = list2[0].data();
+
+	errors = 0;
+	for (unsigned int i = 0; i < img.size(); i++) {
+		if (data[i] != data2[i]) {
+			errors++;
+		};
+	};
+	if (errors > 0) {
+			std::cout	<< "Error: Original list and reconverted "
+							"list don't match. Found "
+						<< errors
+						<< " errors. Aborting..."
+						<< std::endl;
+			exit(0);
+	}
+
+
+	std::cout	<< "OK"
+				<< std::endl;
+
 	/*
 	// Testing CImg_Display.
 	std::cout	<< "Trying to display images..."
