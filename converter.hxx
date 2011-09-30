@@ -85,8 +85,7 @@ mxArray* CImgList2mx(
 		imgTmp = list[i];
 		mxTmp = CImg2mx<T>(imgTmp);
 
-		// Matlab indices start at 1, not 0!
-		mxSetCell(mxCell, i + 1, mxTmp);
+		mxSetCell(mxCell, i, mxTmp);
 
 		// Clean up before the next iteration,
 		// we don't want nasty memory leaks.
@@ -168,6 +167,40 @@ cimg_library::CImg<T> mx2CImg(
 	img.transpose();
 
 	return img;
+}
+
+
+template <typename T>
+cimg_library::CImgList<T> mx2CImgList (
+		const mxArray* mxA) {
+	// Checks if the supplied mxArray is a cell matrix
+	if (!mxIsCell(mxA)) {
+		throw std::invalid_argument("Conversion failed. "
+				"Supplied mxArray is not a cell array. "
+				"Cannot convert into a CImgList."
+				);
+	};
+	// Gets the number of dimensions and elements
+	mwSize ndims = mxGetNumberOfDimensions(mxA);
+	int elems = mxGetNumberOfElements(mxA);
+
+	// The return list
+	cimg_library::CImgList<T> list(elems);
+
+	// Conversion
+	cimg_library::CImg<T> imgTmp;
+	mxArray* mxTmp;
+	for (int i = 0; i < elems; i++) {
+		mxTmp = mxGetCell(mxA, i);
+		// This will fail if the types don't match or
+		// the dimensions are wrong (>4).
+		imgTmp = mx2CImgList<T>(mxTmp);
+	};
+
+	return list;
+	
+
+	
 }
 
 
